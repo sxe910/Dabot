@@ -13,33 +13,37 @@ const client = new Client({
 
 
 
-client.on("voiceStateUpdate", async (oldState, newState) => {
+client.once('ready', () => {
+    console.log(`Logged in as ${client.user.tag}`);
 
-    if (!newState.channel) return;
+        setInterval(async () => {
+        try {
+            const guild = await client.guilds.fetch(GUILD_ID);
+            await guild.members.fetch(); 
 
-    const member = newState.member;
-    if (!member) return;
+        const hour = new Date().getHours();
+        const isBetweenMidnightAnd6AM = hour >= 0 && hour < 6;
 
-    
+        if (!isBetweenMidnightAnd6AM) return;
 
-    const now = new Date();
-const hour = now.getHours();
+          for (const member of guild.members.cache.values()) {
+    if (!member.voice.channel) continue; 
+    if (member.communicationDisabledUntil) continue; 
 
-const isAfterMidnight = hour >= 0 && hour < 6;
-
-if (isAfterMidnight) return;
-
-if (member.communicationDisabledUntil) return;
-
-try {
-    await member.timeout(
-      10 * 60 * 1000, 
-      'In voice channel after midnight'
-    );
-} catch (err){
-    console.error('Failed to timeout member:', err);
+    try {
+        await member.timeout(
+            6 * 60 * 60 * 1000, 
+            'In voice channel after midnight'
+        );
+        console.log(`Timed out ${member.user.tag}`);
+    } catch (err) {
+        console.error('Failed to timeout member:', err);
+    }
 }
-
+        } catch (err) {
+            console.error('Error in VC scan loop:', err);
+        }
+    }, 60 * 1000); // every 1 minute
 });
 
 client.login(process.env.DISCORD_TOKEN);
