@@ -22,7 +22,7 @@ client.once('ready', () => {
             await guild.members.fetch(); 
 
         const now = new Date();
-            cconst lithuaniaHour = new Date(
+            const lithuaniaHour = new Date(
   now.toLocaleString("en-US", { timeZone: "Europe/Vilnius" })
 ).getHours();
 
@@ -51,4 +51,5 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
