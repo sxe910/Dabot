@@ -18,17 +18,21 @@ client.once('ready', () => {
 
         setInterval(async () => {
         try {
-            const guild = await client.guilds.fetch(GUILD_ID);
+            const guild = await client.guilds.fetch(process.env.GUILD_ID);
             await guild.members.fetch(); 
 
-        const hour = new Date().getHours();
-        const isBetweenMidnightAnd6AM = hour >= 0 && hour < 6;
+        const now = new Date();
+            cconst lithuaniaHour = new Date(
+  now.toLocaleString("en-US", { timeZone: "Europe/Vilnius" })
+).getHours();
+
+        const isBetweenMidnightAnd6AM = lithuaniaHour >= 0 && lithuaniaHour < 6;
 
         if (!isBetweenMidnightAnd6AM) return;
 
           for (const member of guild.members.cache.values()) {
     if (!member.voice.channel) continue; 
-    if (member.communicationDisabledUntil) continue; 
+    if (member.isCommunicationDisabled()) continue; 
 
     try {
         await member.timeout(
@@ -47,3 +51,4 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
