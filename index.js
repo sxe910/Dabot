@@ -31,13 +31,14 @@ client.once('ready', () => {
     timeZone: 'Europe/Vilnius',
   }).format(new Date())
 );
-            console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
+            
         const isBetweenMidnightAnd6AM = lithuaniaHour >= 8 && lithuaniaHour < 12;
+            console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
 
         if (!isBetweenMidnightAnd6AM) return;
 
           for (const member of guild.members.cache.values()) {
-    if (!member.voice.channel) continue; 
+if (!member.voice.channelId) continue;
     if (member.isCommunicationDisabled()) continue; 
 
     try {
@@ -57,6 +58,7 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
