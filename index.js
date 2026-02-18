@@ -21,11 +21,13 @@ client.once('ready', () => {
             const guild = await client.guilds.fetch(process.env.GUILD_ID);
             await guild.members.fetch(); 
 
-        const now = new Date();
-            const lithuaniaHour = new Date(
-  now.toLocaleString("en-US", { timeZone: "Europe/Vilnius" })
-).getHours();
-
+        const lithuaniaHour = Number(
+  new Intl.DateTimeFormat('en-GB', {
+    hour: 'numeric',
+    hour12: false,
+    timeZone: 'Europe/Vilnius',
+  }).format(new Date())
+);
         const isBetweenMidnightAnd6AM = lithuaniaHour >= 8 && lithuaniaHour < 12;
 
         if (!isBetweenMidnightAnd6AM) return;
@@ -51,6 +53,7 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
