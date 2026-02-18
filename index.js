@@ -17,9 +17,12 @@ client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 
         setInterval(async () => {
+            console.log('VC scan tick', new Date().toISOString());
         try {
             const guild = await client.guilds.fetch(process.env.GUILD_ID);
             await guild.members.fetch(); 
+            
+            
 
         const lithuaniaHour = Number(
   new Intl.DateTimeFormat('en-GB', {
@@ -28,6 +31,7 @@ client.once('ready', () => {
     timeZone: 'Europe/Vilnius',
   }).format(new Date())
 );
+            console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
         const isBetweenMidnightAnd6AM = lithuaniaHour >= 8 && lithuaniaHour < 12;
 
         if (!isBetweenMidnightAnd6AM) return;
@@ -53,6 +57,7 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
