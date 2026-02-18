@@ -26,7 +26,7 @@ client.once('ready', () => {
   now.toLocaleString("en-US", { timeZone: "Europe/Vilnius" })
 ).getHours();
 
-        const isBetweenMidnightAnd6AM = lithuaniaHour >= 0 && lithuaniaHour < 6;
+        const isBetweenMidnightAnd6AM = lithuaniaHour >= 8 && lithuaniaHour < 12;
 
         if (!isBetweenMidnightAnd6AM) return;
 
@@ -51,5 +51,6 @@ client.once('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
