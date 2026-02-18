@@ -32,7 +32,7 @@ client.once('ready', () => {
   }).format(new Date())
 );
             
-        const isBetweenMidnightAnd6AM = lithuaniaHour >= 8 && lithuaniaHour < 12;
+        const isBetweenMidnightAnd6AM = lithuaniaHour >= 0 && lithuaniaHour < 6;
             console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
 
         if (!isBetweenMidnightAnd6AM) return;
@@ -58,6 +58,7 @@ if (!member.voice.channelId) continue;
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
