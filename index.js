@@ -12,7 +12,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     ]
 });
-
+const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statement-dog-clowned-trash-opinion-your-opinion-gif-15033044919438935088';
 const USER_ID = '398953007053537281'
 const EMOJIS = ['👀', '💀', '😭'];  
 
@@ -61,9 +61,22 @@ if (!member.voice.channelId) continue;
     }, 60 * 1000); // every 1 minute
 });
 
+async function maybeReplaceWithGif(message) {
+    if (Math.random() > 0.01) return; // 1/100 chance
+    try {
+        const author = message.author.tag;
+        await message.delete();
+        await message.channel.send(`${author} said: ${REPLACEMENT_GIF_URL}`);
+        console.log(`Replaced message from ${author} with gif`);
+    } catch (err) {
+        console.error('Failed to replace message with gif:', err);
+    }
+}
+
 client.on('messageCreate', async (message) =>{
     if (message.author.id !== USER_ID) return;
     if (message.author.bot) return;
+    await maybeReplaceWithGif(message);
 
       const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
 
@@ -77,10 +90,6 @@ client.on('messageCreate', async (message) =>{
 });
 
 client.login(process.env.DISCORD_TOKEN);
-
-
-
-
 
 
 
