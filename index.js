@@ -11,6 +11,8 @@ const client = new Client({
     ]
 });
 
+const USER_ID = '398953007053537281'
+const EMOJIS = ['👀', '💀', '😭'];  
 
 
 client.once('ready', () => {
@@ -57,7 +59,23 @@ if (!member.voice.channelId) continue;
     }, 60 * 1000); // every 1 minute
 });
 
+client.on('messageCreate', async (message) =>{
+    if (message.author.id !== USER_ID) return;
+    if (message.author.bot) return;
+
+      const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+
+    try{
+        await message.react(emoji);
+        console.log('Reacted to message from ${message.author.tag}');
+    
+    } catch (err){
+        console.error('Failed to react:', err);
+    }
+});
+
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
