@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { Client, GatewayIntentBits} from 'discord.js';
+import { Client, GatewayIntentBits, EmbedBuilder} from 'discord.js';
 
 const client = new Client({
     intents: [
@@ -16,7 +16,7 @@ const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statemen
 const USER_ID = '398953007053537281'
 const EMOJIS = ['👀', '💀', '😭'];  
 const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID 
-const TAGS = ['R6', 'Rainbow Six', 'Feet']; 
+const TAGS = ['R6', 'Rainbow Six', 'Feet']; // Replace with your desired tags
 
 async function fetchImageByTags(tags) {
     const tagString = tags.join('+');
@@ -119,9 +119,13 @@ async function maybeReplaceWithGif(message) {
 }
 
 client.on('messageCreate', async (message) =>{
+    if (message.content.startsWith('!goon')) {
+        await postImageToChannel(TAGS);
+    }
+    await maybeReplaceWithGif(message);
     if (message.author.id !== USER_ID) return;
     if (message.author.bot) return;
-    await maybeReplaceWithGif(message);
+
 
       const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
 
@@ -132,14 +136,10 @@ client.on('messageCreate', async (message) =>{
     } catch (err){
         console.error('Failed to react:', err);
     }
-    if (message.content.startsWith('!goon')) {
-        await postImageToChannel(tags);
-    }
+    
 });
 
 client.login(process.env.DISCORD_TOKEN);
-
-
 
 
 
