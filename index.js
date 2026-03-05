@@ -15,8 +15,8 @@ const client = new Client({
 const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statement-dog-clowned-trash-opinion-your-opinion-gif-15033044919438935088';
 const USER_ID = '398953007053537281'
 const EMOJIS = ['👀', '💀', '😭'];  
-const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID || 'YOUR_CHANNEL_ID_HERE';
-const TAGS = ['R6', 'Rainbow Six', 'Feet']; // Replace with your desired tags
+const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID |
+const TAGS = ['R6', 'Rainbow Six', 'Feet']; 
 
 async function fetchImageByTags(tags) {
     const tagString = tags.join('+');
@@ -138,6 +138,7 @@ client.on('messageCreate', async (message) =>{
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
