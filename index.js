@@ -74,6 +74,7 @@ async function maybeReplaceWithGif(message) {
 }
 
 client.on('messageCreate', async (message) =>{
+await maybeReplaceWithGif(message)
     if (message.author.id !== USER_ID) return;
     if (message.author.bot) return;
     await maybeReplaceWithGif(message);
@@ -90,8 +91,3 @@ client.on('messageCreate', async (message) =>{
 });
 
 client.login(process.env.DISCORD_TOKEN);
-
-
-
-
-
