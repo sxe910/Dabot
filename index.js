@@ -15,7 +15,52 @@ const client = new Client({
 const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statement-dog-clowned-trash-opinion-your-opinion-gif-15033044919438935088';
 const USER_ID = '398953007053537281'
 const EMOJIS = ['👀', '💀', '😭'];  
+const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID || 'YOUR_CHANNEL_ID_HERE';
+const TAGS = ['R6', 'Rainbow Six', 'Feet']; // Replace with your desired tags
 
+async function fetchImageByTags(tags) {
+    const tagString = tags.join('+');
+    console.log(`Fetching from Rule34 with tags: ${tagString}`);
+    try {
+        const url = `https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=100&tags=${tagString}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Rule34 API responded with ${res.status}`);
+        const posts = await res.json();
+        if (!posts || posts.length === 0) {
+            console.log('No posts found for tags:', tagString);
+            return null;
+        }
+        const post = posts[Math.floor(Math.random() * posts.length)];
+        return post.file_url ?? null;
+    } catch (err) {
+        console.error('Error fetching from Rule34:', err);
+        return null;
+    }
+}
+
+// --- Post image to channel ---
+async function postImageToChannel(tags = TAGS) {
+    try {
+        const channel = await client.channels.fetch(IMAGE_CHANNEL_ID);
+        if (!channel || !channel.isTextBased()) {
+            console.error('Image channel not found or not text-based.');
+            return;
+        }
+        const imageUrl = await fetchImageByTags(tags);
+        if (!imageUrl) {
+            console.log('No image found for the given tags.');
+            return;
+        }
+        const embed = new EmbedBuilder()
+            .setImage(imageUrl)
+            .setFooter({ text: `Tags: ${tags.join(', ')}` })
+            .setTimestamp();
+        await channel.send({ embeds: [embed] });
+        console.log(`Posted image to channel ${IMAGE_CHANNEL_ID}`);
+    } catch (err) {
+        console.error('Failed to post image:', err);
+    }
+}
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
@@ -74,7 +119,6 @@ async function maybeReplaceWithGif(message) {
 }
 
 client.on('messageCreate', async (message) =>{
-await maybeReplaceWithGif(message)
     if (message.author.id !== USER_ID) return;
     if (message.author.bot) return;
     await maybeReplaceWithGif(message);
@@ -88,6 +132,17 @@ await maybeReplaceWithGif(message)
     } catch (err){
         console.error('Failed to react:', err);
     }
+    if (message.content.startsWith('!goon')) {
+        await postImageToChannel(tags);
+    }
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+
+
+
+
+
+
+
