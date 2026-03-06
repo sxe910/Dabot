@@ -111,7 +111,7 @@ async function maybeReplaceWithGif(message) {
     try {
         const author = message.author.tag;
         await message.delete();
-        await message.channel.send(`${author} said: ${REPLACEMENT_GIF_URL}`);
+        await message.channel.send(`${author} dalbajobas ${REPLACEMENT_GIF_URL}`);
         console.log(`Replaced message from ${author} with gif`);
     } catch (err) {
         console.error('Failed to replace message with gif:', err);
@@ -140,6 +140,7 @@ client.on('messageCreate', async (message) =>{
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
