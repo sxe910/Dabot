@@ -128,7 +128,8 @@ client.on('messageCreate', async (message) =>{
 
 
       const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-
+    
+if (Math.random() > 0.01)
     try{
         await message.react(emoji);
         console.log('Reacted to message from ${message.author.tag}');
@@ -140,6 +141,7 @@ client.on('messageCreate', async (message) =>{
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
