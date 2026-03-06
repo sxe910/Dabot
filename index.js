@@ -16,13 +16,13 @@ const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statemen
 const USER_ID = '398953007053537281'
 const EMOJIS = ['👀', '💀', '😭'];  
 const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID 
-const TAGS = ['R6', 'Rainbow Six', 'Feet']; // Replace with your desired tags
+const TAGS = ['rainbow_six_siege']; // Replace with your desired tags
 
 async function fetchImageByTags(tags) {
     const tagString = tags.join('+');
     console.log(`Fetching from Rule34 with tags: ${tagString}`);
     try {
-        const url = `https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=100&tags=${tagString}`;
+        const url = `https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=100&tags=${tagString}&api_key=${process.env.RULE34_API_KEY}&user_id=${process.env.RULE34_USER_ID}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Rule34 API responded with ${res.status}`);
         const posts = await res.json();
@@ -141,6 +141,7 @@ if (Math.random() > 0.01)
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
