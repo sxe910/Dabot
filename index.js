@@ -107,7 +107,7 @@ if (!member.voice.channelId) continue;
 });
 
 async function maybeReplaceWithGif(message) {
-    if (Math.random() > 0.01) return; // 1/100 chance
+    if (Math.random() > 0.001) return; // 1/100 chance
     try {
         const author = message.author.tag;
         await message.delete();
@@ -119,17 +119,19 @@ async function maybeReplaceWithGif(message) {
 }
 
 client.on('messageCreate', async (message) =>{
+    if (message.author.bot) return;
     if (message.content.startsWith('!goon')) {
-        await postImageToChannel(TAGS);
+       const args = message.content.slice('!goon'.length).trim().split(/\s+/).filter(Boolean);
+    const tags = args.length > 0 ? args : TAGS;
+    await postImageToChannel(tags);
     }
     await maybeReplaceWithGif(message);
-    if (message.author.id !== USER_ID) return;
-    if (message.author.bot) return;
+    
 
 
       const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     
-if (Math.random() > 0.01)
+if (Math.random() > 0.01){
     try{
         await message.react(emoji);
         console.log('Reacted to message from ${message.author.tag}');
@@ -138,9 +140,11 @@ if (Math.random() > 0.01)
         console.error('Failed to react:', err);
     }
     
+}
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
 
 
 
