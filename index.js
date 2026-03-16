@@ -54,6 +54,25 @@ async function getSpotifyToken() {
     return spotifyToken;
 }
 
+async function getPlaylistTracks(token) {
+    let tracks = [];
+    let offset = 0;
+    const limit = 100;
+
+    while (true) {
+        const res = await fetch(`https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=${limit}&offset=${offset}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!data.items || data.items.length === 0) break;
+        tracks = tracks.concat(data.items.filter(item => item && item.track));
+        if (data.items.length < limit) break;
+        offset += limit;
+    }
+
+    return tracks;
+}
+
 async function postRandomSong() {
     try {
         const channel = await client.channels.fetch(SONG_CHANNEL_ID);
@@ -62,19 +81,15 @@ async function postRandomSong() {
             return;
         }
 
-        const token = await getSpotifyToken();
-
-        // Fetch playlist tracks (max 100)
-        const res = await fetch(`https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=100`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-
-        if (!data.items || data.items.length === 0) {
-            console.log('No tracks found in playlist.');
-            return;
-        }
-
+const token = await getSpotifyToken();
+const validItems = await getPlaylistTracks(token);
+if (validItems.length === 0) {
+    console.log('No valid tracks found in playlist.');
+    return;
+}
+const item = validItems[Math.floor(Math.random() * validItems.length)];
+const track = item.track;
+        
         // Pick a random track
         const item = data.items[Math.floor(Math.random() * data.items.length)];
         const track = item.track;
