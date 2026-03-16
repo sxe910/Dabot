@@ -14,9 +14,9 @@ const client = new Client({
 });
 
 const SONG_MESSAGES = [
-    'Jaučiuosi kaip glitch’as, kuris pats save pataiso peiliu',
+    'Jaučiuosi kaip glitch'as, kuris pats save pataiso peiliu',
     'Bloga diena? Ne, blogas gyvenimas. Man patinka.',
-    'Šiandien mano vibe’as – viduramžių maro daktaras su airpods',
+    'Šiandien mano vibe'as – viduramžių maro daktaras su airpods',
     'Esu 3 Red Bull ir 1 egzistencinė krizė',
     'Nuotaika: įžeisiu tave meiliai ir tu dar padėkosi',
     'Šiandien noriu kažką nors papjauti',
@@ -30,7 +30,7 @@ const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statemen
 const USER_ID = '398953007053537281';
 const EMOJIS = ['👀', '💀', '😭'];
 const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID;
-const SONG_CHANNEL_ID = process.env.SONG_CHANNEL_ID; // <-- add this to your .env
+const SONG_CHANNEL_ID = process.env.SONG_CHANNEL_ID;
 const TAGS = ['rainbow_six_siege'];
 
 // --- Spotify ---
@@ -58,7 +58,6 @@ async function getPlaylistTracks(token) {
     let tracks = [];
     let offset = 0;
     const limit = 100;
-
     while (true) {
         const res = await fetch(`https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=${limit}&offset=${offset}`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -69,7 +68,6 @@ async function getPlaylistTracks(token) {
         if (data.items.length < limit) break;
         offset += limit;
     }
-
     return tracks;
 }
 
@@ -80,21 +78,17 @@ async function postRandomSong() {
             console.error('Song channel not found or not text-based.');
             return;
         }
-
         const token = await getSpotifyToken();
         const validItems = await getPlaylistTracks(token);
         if (validItems.length === 0) {
             console.log('No valid tracks found in playlist.');
             return;
         }
-
         const item = validItems[Math.floor(Math.random() * validItems.length)];
         const track = item.track;
-
         const trackUrl = track.external_urls.spotify;
         const trackName = track.name;
         const artist = track.artists.map(a => a.name).join(', ');
-
         const randomMessage = SONG_MESSAGES[Math.floor(Math.random() * SONG_MESSAGES.length)];
         await channel.send(`${randomMessage}\n🎵 **${trackName}** by **${artist}**\n${trackUrl}`);
         console.log(`Posted song: ${trackName} by ${artist}`);
@@ -152,13 +146,11 @@ async function postImageToChannel(tags = TAGS) {
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 
-    // VC midnight scan — every 1 minute
     setInterval(async () => {
         console.log('VC scan tick', new Date().toISOString());
         try {
             const guild = await client.guilds.fetch(process.env.GUILD_ID);
             await guild.members.fetch();
-
             const lithuaniaHour = Number(
                 new Intl.DateTimeFormat('en-GB', {
                     hour: 'numeric',
@@ -166,11 +158,9 @@ client.once('ready', () => {
                     timeZone: 'Europe/Vilnius',
                 }).format(new Date())
             );
-
             const isBetweenMidnightAnd6AM = lithuaniaHour >= 0 && lithuaniaHour < 6;
             console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
             if (!isBetweenMidnightAnd6AM) return;
-
             for (const member of guild.members.cache.values()) {
                 if (!member.voice.channelId) continue;
                 if (member.isCommunicationDisabled()) continue;
@@ -186,14 +176,13 @@ client.once('ready', () => {
         }
     }, 60 * 1000);
 
-    // Post a random song every 24 hours
-    postRandomSong(); // post once on startup
+    postRandomSong();
     setInterval(postRandomSong, 24 * 60 * 60 * 1000);
 });
 
 // --- Gif replacement ---
 async function maybeReplaceWithGif(message) {
-    if (Math.random() > 0.001) return;
+    if (Math.random() > 0.001) return false;
     try {
         const author = message.author.tag;
         await message.delete();
@@ -210,7 +199,6 @@ async function maybeReplaceWithGif(message) {
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
-    // !goon command
     if (message.content.startsWith('!goon')) {
         const args = message.content.slice('!goon'.length).trim().split(/\s+/).filter(Boolean);
         const tags = args.length > 0 ? args : TAGS;
@@ -218,11 +206,9 @@ client.on('messageCreate', async (message) => {
         return;
     }
 
-    // 1/1000 chance to replace with gif
     const replaced = await maybeReplaceWithGif(message);
-    if (replaced) return; // message deleted, stop here
+    if (replaced) return;
 
-    // 1/100 chance to react
     if (Math.random() < 0.01) {
         const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
         try {
