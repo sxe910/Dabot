@@ -81,22 +81,15 @@ async function postRandomSong() {
             return;
         }
 
-const token = await getSpotifyToken();
-const validItems = await getPlaylistTracks(token);
-if (validItems.length === 0) {
-    console.log('No valid tracks found in playlist.');
-    return;
-}
-const item = validItems[Math.floor(Math.random() * validItems.length)];
-const track = item.track;
-        
-        // Pick a random track
-        const item = data.items[Math.floor(Math.random() * data.items.length)];
-        const track = item.track;
-        if (!track) {
-            console.log('Track was null, skipping.');
+        const token = await getSpotifyToken();
+        const validItems = await getPlaylistTracks(token);
+        if (validItems.length === 0) {
+            console.log('No valid tracks found in playlist.');
             return;
         }
+
+        const item = validItems[Math.floor(Math.random() * validItems.length)];
+        const track = item.track;
 
         const trackUrl = track.external_urls.spotify;
         const trackName = track.name;
