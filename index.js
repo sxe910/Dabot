@@ -13,6 +13,19 @@ const client = new Client({
     ]
 });
 
+const SONG_MESSAGES = [
+    'Jaučiuosi kaip glitch’as, kuris pats save pataiso peiliu',
+    'Bloga diena? Ne, blogas gyvenimas. Man patinka.',
+    'Šiandien mano vibe’as – viduramžių maro daktaras su airpods',
+    'Esu 3 Red Bull ir 1 egzistencinė krizė',
+    'Nuotaika: įžeisiu tave meiliai ir tu dar padėkosi',
+    'Šiandien noriu kažką nors papjauti',
+    'All hail Benjamin Youngin Irony',
+    'man viskas gerai, o jums turbūt nebebus',
+    'Šiandien mano diena',
+    'Sigma boss music',
+];
+
 const REPLACEMENT_GIF_URL = 'https://tenor.com/view/he-made-a-statement-statement-dog-clowned-trash-opinion-your-opinion-gif-15033044919438935088';
 const USER_ID = '398953007053537281';
 const EMOJIS = ['👀', '💀', '😭'];
@@ -74,7 +87,8 @@ async function postRandomSong() {
         const trackName = track.name;
         const artist = track.artists.map(a => a.name).join(', ');
 
-        await channel.send(`🎵 **${trackName}** by **${artist}**\n${trackUrl}`);
+        const randomMessage = SONG_MESSAGES[Math.floor(Math.random() * SONG_MESSAGES.length)];
+        await channel.send(`${randomMessage}\n🎵 **${trackName}** by **${artist}**\n${trackUrl}`);
         console.log(`Posted song: ${trackName} by ${artist}`);
     } catch (err) {
         console.error('Failed to post song:', err);
