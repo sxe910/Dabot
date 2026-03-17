@@ -70,8 +70,22 @@ async function getPlaylistTracks(token) {
     let tracks = [];
     let offset = 0;
     const limit = 100;
+
+    // First find the playlist via /me/playlists
+    const playlistsRes = await fetch(`https://api.spotify.com/v1/me/playlists?limit=50`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const playlistsData = await playlistsRes.json();
+    const playlist = playlistsData.items?.find(p => p.id === process.env.SPOTIFY_PLAYLIST_ID);
+    
+    if (!playlist) {
+        console.error('Playlist not found in user playlists');
+        return [];
+    }
+
+    // Use the items href directly from the playlist object
     while (true) {
-        const url = `https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=${limit}&offset=${offset}`;
+        const url = `${playlist.items.href}?limit=${limit}&offset=${offset}`;
         console.log('Fetching tracks from:', url);
         const res = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
