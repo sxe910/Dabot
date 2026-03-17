@@ -64,10 +64,13 @@ async function getPlaylistTracks(token) {
     let offset = 0;
     const limit = 100;
     while (true) {
-        const res = await fetch(`https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=${limit}&offset=${offset}`, {
+        const url = `https://api.spotify.com/v1/playlists/${process.env.SPOTIFY_PLAYLIST_ID}/tracks?limit=${limit}&offset=${offset}`;
+        console.log('Fetching tracks from:', url);
+        const res = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
+        console.log('Spotify response status:', res.status, 'items:', data.items?.length, 'error:', data.error);
         if (!data.items || data.items.length === 0) break;
         tracks = tracks.concat(data.items.filter(item => item && item.track));
         if (data.items.length < limit) break;
