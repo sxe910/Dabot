@@ -15,9 +15,9 @@ const client = new Client({
 });
 
 const SONG_MESSAGES = [
-    'Jaučiuosi kaip glitch'as, kuris pats save pataiso peiliu',
+    'Jaučiuosi kaip glitchas, kuris pats save pataiso peiliu',
     'Bloga diena? Ne, blogas gyvenimas. Man patinka.',
-    'Šiandien mano vibe'as – viduramžių maro daktaras su airpods',
+    'Šiandien mano vibeas – viduramžių maro daktaras su airpods',
     'Esu 3 Red Bull ir 1 egzistencinė krizė',
     'Nuotaika: įžeisiu tave meiliai ir tu dar padėkosi',
     'Šiandien noriu kažką nors papjauti',
