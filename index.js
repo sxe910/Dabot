@@ -10,6 +10,7 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions
     ]
 });
 
@@ -32,6 +33,10 @@ const EMOJIS = ['👀', '💀', '😭'];
 const IMAGE_CHANNEL_ID = process.env.IMAGE_CHANNEL_ID;
 const SONG_CHANNEL_ID = process.env.SONG_CHANNEL_ID;
 const TAGS = ['rainbow_six_siege'];
+const ARCHIVE_CHANNEL_ID = process.env.ARCHIVE_CHANNEL_ID;
+const ARCHIVE_EMOJI = '🔥';
+const ARCHIVE_THRESHOLD = 4;
+const archivedMessages = new Set(); // track already archived messages
 
 // --- Spotify ---
 let spotifyToken = null;
@@ -217,6 +222,38 @@ client.on('messageCreate', async (message) => {
         } catch (err) {
             console.error('Failed to react:', err);
         }
+    }
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (reaction.partial) {
+        try { await reaction.fetch(); } catch (err) { return; }
+    }
+    if (reaction.emoji.name !== ARCHIVE_EMOJI) return;
+    if (reaction.count < ARCHIVE_THRESHOLD) return;
+    if (archivedMessages.has(reaction.message.id)) return;
+
+    try {
+        const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+        const archiveChannel = await client.channels.fetch(ARCHIVE_CHANNEL_ID);
+        if (!archiveChannel || !archiveChannel.isTextBased()) return;
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+            .setDescription(message.content || '')
+            .setTimestamp(message.createdAt)
+            .setFooter({ text: `🔥 ${reaction.count} | #${message.channel.name}` })
+            .setColor(0xFF4500);
+
+        if (message.attachments.size > 0) {
+            embed.setImage(message.attachments.first().url);
+        }
+
+        await archiveChannel.send({ embeds: [embed] });
+        archivedMessages.add(message.id);
+        console.log(`Archived message ${message.id} from ${message.author.tag}`);
+    } catch (err) {
+        console.error('Failed to archive message:', err);
     }
 });
 
