@@ -54,6 +54,7 @@ async function getSpotifyToken() {
         body: `grant_type=refresh_token&refresh_token=${process.env.SPOTIFY_REFRESH_TOKEN}`,
     });
     const data = await res.json();
+    console.log('Spotify token response:', JSON.stringify(data));
     spotifyToken = data.access_token;
     spotifyTokenExpiry = Date.now() + (data.expires_in - 60) * 1000;
     return spotifyToken;
