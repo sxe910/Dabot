@@ -55,6 +55,12 @@ async function getSpotifyToken() {
     });
     const data = await res.json();
     console.log('Spotify token response:', JSON.stringify(data));
+    if (!data.access_token) {
+        console.error('Failed to get Spotify token:', data);
+        spotifyToken = null;
+        spotifyTokenExpiry = 0;
+        return null;
+    }
     spotifyToken = data.access_token;
     spotifyTokenExpiry = Date.now() + (data.expires_in - 60) * 1000;
     return spotifyToken;
