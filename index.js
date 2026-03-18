@@ -37,6 +37,7 @@ const ARCHIVE_CHANNEL_ID = process.env.ARCHIVE_CHANNEL_ID;
 const ARCHIVE_EMOJI = '🔥';
 const ARCHIVE_THRESHOLD = 4;
 const archivedMessages = new Set(); // track already archived messages
+const REPLY_MSG = [ 'Uzpisai', 'Eik nahui', 'Gal geriau patylėk', 'Benas padarytu geriau', 'Fokin Andrei', 'Smirdi lol'];
 
 // --- Spotify ---
 let spotifyToken = null;
@@ -189,6 +190,7 @@ client.once('ready', () => {
             );
             const isBetweenMidnightAnd6AM = lithuaniaHour >= 0 && lithuaniaHour < 6;
             console.log('LT hour:', lithuaniaHour, 'allowed:', isBetweenMidnightAnd6AM);
+        
             if (!isBetweenMidnightAnd6AM) return;
             for (const member of guild.members.cache.values()) {
                 if (!member.voice.channelId) continue;
@@ -203,10 +205,22 @@ client.once('ready', () => {
         } catch (err) {
             console.error('Error in VC scan loop:', err);
         }
+        
     }, 60 * 1000);
 
-    postRandomSong();
-    setInterval(postRandomSong, 24 * 60 * 60 * 1000);
+    setInterval(async () => {
+    const lithuaniaHour = Number(
+        new Intl.DateTimeFormat('en-GB', {
+            hour: 'numeric',
+            hour12: false,
+            timeZone: 'Europe/Vilnius',
+        }).format(new Date())
+    );
+    if (lithuaniaHour === 8) await postRandomSong();
+}, 60 * 60 * 1000);
+
+    
+    
 });
 
 // --- Gif replacement ---
@@ -246,6 +260,17 @@ client.on('messageCreate', async (message) => {
         } catch (err) {
             console.error('Failed to react:', err);
         }
+    }
+    if(Math.random() < 0.002){
+        
+    if (message.author.id === USER_ID && REPLY_MSG) {
+        
+    try {
+        await message.reply(REPLY_MSG(Math.floor(Math.random() * REPLY_MSG.length)));
+    } catch (err) {
+        console.error('Failed to reply to target user:', err);
+    }
+}
     }
 });
 
