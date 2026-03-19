@@ -94,7 +94,7 @@ async function getPlaylistTracks(token) {
         const data = await res.json();
         console.log('Spotify response status:', res.status, 'items:', data.items?.length, 'error:', data.error);
         if (!data.items || data.items.length === 0) break;
-        tracks = tracks.concat(data.items.filter(item => item && item.track));
+        tracks = tracks.concat(data.items.filter(item => item && item.item).map(item => ({ track: item.item })));
         if (data.items.length < limit) break;
         offset += limit;
     }
@@ -267,7 +267,7 @@ client.on('messageCreate', async (message) => {
     if (message.author.id === USER_ID && REPLY_MSG) {
         
     try {
-        await message.reply(REPLY_MSG(Math.floor(Math.random() * REPLY_MSG.length)));
+        await message.reply(REPLY_MSG[Math.floor(Math.random() * REPLY_MSG.length)]);
     } catch (err) {
         console.error('Failed to reply to target user:', err);
     }
@@ -303,11 +303,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
         if(newpic <  0.33){
             console.log('Noriu Femboy');
         }
-        if(newpic  > 0.66){
+        else if(newpic  < 0.66){
         console.log('Noriu JoJo');
         }
-        if(newpic < 0.66){
-        console.log('Noriu Anime Girl wit da big booba');
+        else{
+         console.log('Noriu Anime girl wit da boooba');
         }
         await archiveChannel.send({ embeds: [embed] });
         archivedMessages.add(message.id);
