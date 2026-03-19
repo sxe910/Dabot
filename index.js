@@ -176,6 +176,17 @@ async function postImageToChannel(tags = TAGS) {
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 
+    const newpic = Math.random()
+        if(newpic <  0.33){
+            console.log('Noriu Femboy');
+        }
+        else if(newpic  < 0.66){
+        console.log('Noriu JoJo');
+        }
+        else{
+         console.log('Noriu Anime girl wit da boooba');
+        }
+
     setInterval(async () => {
         console.log('VC scan tick', new Date().toISOString());
         try {
@@ -299,16 +310,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
         if (message.attachments.size > 0) {
             embed.setImage(message.attachments.first().url);
         }
-        const newpic = Math.random()
-        if(newpic <  0.33){
-            console.log('Noriu Femboy');
-        }
-        else if(newpic  < 0.66){
-        console.log('Noriu JoJo');
-        }
-        else{
-         console.log('Noriu Anime girl wit da boooba');
-        }
+        
         await archiveChannel.send({ embeds: [embed] });
         archivedMessages.add(message.id);
         console.log(`Archived message ${message.id} from ${message.author.tag}`);
