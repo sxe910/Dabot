@@ -216,6 +216,7 @@ client.once('ready', () => {
             timeZone: 'Europe/Vilnius',
         }).format(new Date())
     );
+    console.log('Current hour for song: ', lithuaniaHour)
     if (lithuaniaHour === 8) await postRandomSong();
 }, 60 * 60 * 1000);
 
@@ -272,6 +273,7 @@ client.on('messageCreate', async (message) => {
     }
 }
     }
+    
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -297,7 +299,16 @@ client.on('messageReactionAdd', async (reaction, user) => {
         if (message.attachments.size > 0) {
             embed.setImage(message.attachments.first().url);
         }
-
+        const newpic = Math.random()
+        if(newpic <  0.33){
+            console.log('Noriu Femboy');
+        }
+        if(newpic  > 0.66){
+        console.log('Noriu JoJo');
+        }
+        if(newpic < 0.66){
+        console.log('Noriu Anime Girl wit da big booba');
+        }
         await archiveChannel.send({ embeds: [embed] });
         archivedMessages.add(message.id);
         console.log(`Archived message ${message.id} from ${message.author.tag}`);
